@@ -1,9 +1,11 @@
+import 'package:hive_ce_flutter/hive_flutter.dart';
+
 enum Categories {
   beauty,
-  fragrance
+  fragrances
 }
 
-class Product {
+class Product extends HiveObject {
   Product({
     required this.id,
     required this.title,
