@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
+import 'package:inventory_app/hive_boxes.dart';
 import 'package:inventory_app/order_page.dart';
+import 'package:inventory_app/product.dart';
 
-void main () => runApp(const MyApp());
+Future<void> main() async {
+  await Hive.initFlutter();
+  await Hive.openBox<Product>(productBox);
 
+  runApp(const MyApp());
+}
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
