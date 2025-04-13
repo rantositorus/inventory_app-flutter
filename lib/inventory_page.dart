@@ -29,6 +29,13 @@ class _InventoryPageState extends State<InventoryPage> {
       appBar: AppBar(
         title: const Text('Inventory'),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: Hive.box<Product>(productBox).clear,
+        child: const Icon(
+          Icons.delete,
+          size: 35,
+        ),
+      ),
       body: ValueListenableBuilder<Box<Product>>(
         valueListenable: Hive.box<Product>(productBox).listenable(),
         builder: (BuildContext context, Box<Product> box, Widget? _) {
@@ -43,29 +50,35 @@ class _InventoryPageState extends State<InventoryPage> {
               itemBuilder: (BuildContext context, int index) {
                 final product = products.toList()[index];
 
-                return ListTile(
-                  leading: Text(
-                    product.stock.toString(),
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                  title: Text(product.title),
-                  trailing: SizedBox(
-                    width: 100,
-                    child: Row(
-                      children: [
-                        IconButton(
-                          onPressed: () => _increment(box, product),
-                          icon: const Icon(Icons.add),
-                        ),
-                        IconButton(
-                          onPressed: product.stock == 0
-                            ? null
-                            : () => _decrement(box, product) ,
-                          icon: const Icon(Icons.remove),
-                        )
+                return Dismissible(
+                  key: ValueKey(product.id),
+                  onDismissed: (DismissDirection direction) =>
+                    box.delete(product.key),
+                  background: const ColoredBox(color: Colors.red),
+                  child: ListTile(
+                    leading: Text(
+                      product.stock.toString(),
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                    title: Text(product.title),
+                    trailing: SizedBox(
+                      width: 100,
+                      child: Row(
+                        children: [
+                          IconButton(
+                            onPressed: () => _increment(box, product),
+                            icon: const Icon(Icons.add),
+                          ),
+                          IconButton(
+                            onPressed: product.stock == 0
+                              ? null
+                              : () => _decrement(box, product) ,
+                            icon: const Icon(Icons.remove),
+                          )
                       ],
                     ),
-                  ),  
+                  ),
+                  )  
                 );
               },
           );
